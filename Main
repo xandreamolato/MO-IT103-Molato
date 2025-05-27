@@ -1,0 +1,17 @@
+public class Main {
+    public static void main(String[] args) {
+        Employee emp = new Employee(1, "Xandrea", "Staff");
+        emp.addStock();
+        emp.searchStock();
+
+        Manager mgr = new Manager(101, "Mr. Reyes", "Inventory Manager");
+        mgr.generateReport();
+
+        Supplier sup = new Supplier(201, "ABC Motors", "abc@example.com");
+        sup.supplyStock();
+
+        InventorySystem inv = new InventorySystem();
+        inv.processData();
+        inv.sortByBrand();
+    }
+}
