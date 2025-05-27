@@ -1,0 +1,13 @@
+public class InventorySystem {
+    public void processData() {
+        System.out.println("Processing inventory data...");
+    }
+
+    public void sortByBrand() {
+        System.out.println("Sorting inventory by brand...");
+    }
+
+    public void validateData() {
+        System.out.println("Validating inventory data...");
+    }
+}
