@@ -1,0 +1,25 @@
+public class Employee {
+    private int employeeId;
+    private String name;
+    private String position;
+
+    public Employee(int employeeId, String name, String position) {
+        this.employeeId = employeeId;
+        this.name = name;
+        this.position = position;
+    }
+
+    public void addStock() {
+        System.out.println(name + " is adding stock.");
+    }
+
+    public void deleteStock() {
+        System.out.println(name + " is deleting stock.");
+    }
+
+    public void searchStock() {
+        System.out.println(name + " is searching for stock.");
+    }
+
+    // Getters and setters (optional for later use)
+}
