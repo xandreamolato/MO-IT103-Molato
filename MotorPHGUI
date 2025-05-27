@@ -1,0 +1,68 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class MotorPHGUI {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("MotorPH - Add Employee");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(5, 2, 10, 10));
+
+        // GUI Components
+        JLabel idLabel = new JLabel("Employee Number:");
+        JTextField idField = new JTextField();
+
+        JLabel nameLabel = new JLabel("Full Name:");
+        JTextField nameField = new JTextField();
+
+        JLabel payLabel = new JLabel("Pay Coverage (days):");
+        JTextField payField = new JTextField();
+
+        JButton submitButton = new JButton("Add Employee");
+
+        // Event Handling with Validation
+        submitButton.addActionListener(e -> {
+            try {
+                // Validate Employee Number
+                int employeeNumber = Integer.parseInt(idField.getText().trim());
+
+                // Validate Name
+                String name = nameField.getText().trim();
+                if (name.isEmpty()) {
+                    throw new IllegalArgumentException("Name cannot be empty.");
+                }
+
+                // Validate Pay Coverage
+                int payCoverage = Integer.parseInt(payField.getText().trim());
+                if (payCoverage <= 0) {
+                    throw new IllegalArgumentException("Pay Coverage must be a positive number.");
+                }
+
+                // Display summary
+                JOptionPane.showMessageDialog(frame,
+                        "Employee Added:\nID: " + employeeNumber + "\nName: " + name + "\nCoverage: " + payCoverage + " days");
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame,
+                        "Employee Number and Pay Coverage must be numeric.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(frame,
+                        ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Layout
+        frame.add(idLabel);
+        frame.add(idField);
+        frame.add(nameLabel);
+        frame.add(nameField);
+        frame.add(payLabel);
+        frame.add(payField);
+        frame.add(new JLabel()); // spacer
+        frame.add(submitButton);
+
+        frame.setVisible(true);
+    }
+}
