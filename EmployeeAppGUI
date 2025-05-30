@@ -1,0 +1,58 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
+
+public class EmployeeAppGUI extends JFrame {
+    private JTable table;
+    private DefaultTableModel tableModel;
+    private List<Employee> employeeList;
+
+    public EmployeeAppGUI() {
+        setTitle("MotorPH Employee App");
+        setSize(900, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loadData();
+
+        JButton viewBtn = new JButton("View Employee");
+        JButton addBtn = new JButton("New Employee");
+
+        viewBtn.addActionListener(e -> viewEmployee());
+        addBtn.addActionListener(e -> addEmployee());
+
+        JPanel bottom = new JPanel();
+        bottom.add(viewBtn);
+        bottom.add(addBtn);
+
+        add(new JScrollPane(table), BorderLayout.CENTER);
+        add(bottom, BorderLayout.SOUTH);
+    }
+
+    private void loadData() {
+        employeeList = EmployeeDataHandler.loadEmployees();
+        String[] columns = {"Employee No", "Last Name", "First Name", "SSS", "PhilHealth", "TIN", "Pag-IBIG"};
+        tableModel = new DefaultTableModel(columns, 0);
+        for (Employee e : employeeList) tableModel.addRow(e.toTableRow());
+        table = new JTable(tableModel);
+    }
+
+    private void viewEmployee() {
+        int row = table.getSelectedRow();
+        if (row == -1) return;
+        Employee e = employeeList.get(row);
+        new EmployeeDetailsFrame(e).setVisible(true);
+    }
+
+    private void addEmployee() {
+        new NewEmployeeForm(() -> {
+            tableModel.setRowCount(0);
+            loadData();
+        }).setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new EmployeeAppGUI().setVisible(true));
+    }
+}
