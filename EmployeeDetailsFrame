@@ -1,0 +1,30 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class EmployeeDetailsFrame extends JFrame {
+    public EmployeeDetailsFrame(Employee e) {
+        setTitle("Employee Details");
+        setSize(400, 400);
+        setLayout(new GridLayout(10, 2));
+
+        add(new JLabel("Employee Number:")); add(new JLabel(e.getEmpNo()));
+        add(new JLabel("Name:")); add(new JLabel(e.getFirstName() + " " + e.getLastName()));
+        add(new JLabel("SSS:")); add(new JLabel(e.getSSS()));
+        add(new JLabel("PhilHealth:")); add(new JLabel(e.getPhilHealth()));
+        add(new JLabel("TIN:")); add(new JLabel(e.getTin()));
+        add(new JLabel("Pag-IBIG:")); add(new JLabel(e.getPagIbig()));
+
+        JComboBox<String> monthBox = new JComboBox<>(new String[]{"January", "February", "March", "April"});
+        JButton computeBtn = new JButton("Compute");
+        JLabel salaryLbl = new JLabel("");
+
+        computeBtn.addActionListener(a -> {
+            double salary = e.computeSalary();
+            salaryLbl.setText("Salary for " + monthBox.getSelectedItem() + ": PHP " + salary);
+        });
+
+        add(new JLabel("Select Month:")); add(monthBox);
+        add(new JLabel("")); add(computeBtn);
+        add(new JLabel("")); add(salaryLbl);
+    }
+}
