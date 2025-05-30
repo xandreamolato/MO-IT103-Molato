@@ -1,0 +1,35 @@
+import java.io.*;
+import java.util.*;
+
+public class EmployeeDataHandler {
+    private static final String FILE_NAME = "employees.csv";
+
+    public static List<Employee> loadEmployees() {
+        List<Employee> list = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] d = line.split(",");
+                if (d.length == 9) {
+                    Employee e = new Employee(
+                        d[0], d[1], d[2], d[3], d[4], d[5], d[6],
+                        Double.parseDouble(d[7]), Integer.parseInt(d[8])
+                    );
+                    list.add(e);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading employees: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public static void appendEmployee(Employee e) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            bw.write(String.join(",", e.toCSVRow()));
+            bw.newLine();
+        } catch (IOException ex) {
+            System.out.println("Error saving employee: " + ex.getMessage());
+        }
+    }
+}
