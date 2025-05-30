@@ -1,0 +1,53 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+
+public class NewEmployeeForm extends JFrame {
+    private Runnable onSaveCallback;
+
+    public NewEmployeeForm(Runnable onSaveCallback) {
+        this.onSaveCallback = onSaveCallback;
+        setTitle("New Employee");
+        setSize(400, 400);
+        setLayout(new GridLayout(10, 2));
+
+        JTextField empNo = new JTextField();
+        JTextField lastName = new JTextField();
+        JTextField firstName = new JTextField();
+        JTextField sss = new JTextField();
+        JTextField philHealth = new JTextField();
+        JTextField tin = new JTextField();
+        JTextField pagIbig = new JTextField();
+        JTextField rate = new JTextField();
+        JTextField days = new JTextField();
+
+        add(new JLabel("Employee No:")); add(empNo);
+        add(new JLabel("Last Name:")); add(lastName);
+        add(new JLabel("First Name:")); add(firstName);
+        add(new JLabel("SSS:")); add(sss);
+        add(new JLabel("PhilHealth:")); add(philHealth);
+        add(new JLabel("TIN:")); add(tin);
+        add(new JLabel("Pag-IBIG:")); add(pagIbig);
+        add(new JLabel("Rate per Day:")); add(rate);
+        add(new JLabel("Days Worked:")); add(days);
+
+        JButton submit = new JButton("Submit");
+        submit.addActionListener((ActionEvent e) -> {
+            try {
+                Employee emp = new Employee(
+                        empNo.getText(), lastName.getText(), firstName.getText(),
+                        sss.getText(), philHealth.getText(), tin.getText(), pagIbig.getText(),
+                        Double.parseDouble(rate.getText()), Integer.parseInt(days.getText())
+                );
+                EmployeeDataHandler.appendEmployee(emp);
+                JOptionPane.showMessageDialog(this, "Employee added!");
+                onSaveCallback.run();
+                dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Invalid input: " + ex.getMessage());
+            }
+        });
+
+        add(new JLabel("")); add(submit);
+    }
+}
