@@ -1,25 +1,43 @@
 public class Employee {
-    private int employeeId;
-    private String name;
-    private String position;
+    private String empNo, lastName, firstName;
+    private String sss, philHealth, tin, pagIbig;
+    private double ratePerDay;
+    private int daysWorked;
 
-    public Employee(int employeeId, String name, String position) {
-        this.employeeId = employeeId;
-        this.name = name;
-        this.position = position;
+    public Employee(String empNo, String lastName, String firstName,
+                    String sss, String philHealth, String tin, String pagIbig,
+                    double ratePerDay, int daysWorked) {
+        this.empNo = empNo;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.sss = sss;
+        this.philHealth = philHealth;
+        this.tin = tin;
+        this.pagIbig = pagIbig;
+        this.ratePerDay = ratePerDay;
+        this.daysWorked = daysWorked;
     }
 
-    public void addStock() {
-        System.out.println(name + " is adding stock.");
+    public double computeSalary() {
+        return ratePerDay * daysWorked;
     }
 
-    public void deleteStock() {
-        System.out.println(name + " is deleting stock.");
+    // Getters
+    public String[] toTableRow() {
+        return new String[]{empNo, lastName, firstName, sss, philHealth, tin, pagIbig};
     }
 
-    public void searchStock() {
-        System.out.println(name + " is searching for stock.");
+    public String[] toCSVRow() {
+        return new String[]{empNo, lastName, firstName, sss, philHealth, tin, pagIbig, String.valueOf(ratePerDay), String.valueOf(daysWorked)};
     }
 
-    // Getters and setters (optional for later use)
+    public String getEmpNo() { return empNo; }
+    public String getLastName() { return lastName; }
+    public String getFirstName() { return firstName; }
+    public String getSSS() { return sss; }
+    public String getPhilHealth() { return philHealth; }
+    public String getTin() { return tin; }
+    public String getPagIbig() { return pagIbig; }
+    public double getRatePerDay() { return ratePerDay; }
+    public int getDaysWorked() { return daysWorked; }
 }
