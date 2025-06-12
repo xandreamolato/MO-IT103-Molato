@@ -1,44 +1,38 @@
 public class Employee {
-    private String empNumber;
+    private String empNo;
     private String lastName;
     private String firstName;
-    private String sssNumber;
-    private String philHealthNumber;
+    private String sssNo;
+    private String philHealthNo;
     private String tin;
-    private String pagIbigNumber;
+    private String pagIbigNo;
 
-    public Employee(String empNumber, String lastName, String firstName, String sssNumber, String philHealthNumber, String tin, String pagIbigNumber) {
-        this.empNumber = empNumber;
+    public Employee(String empNo, String lastName, String firstName,
+                    String sssNo, String philHealthNo, String tin, String pagIbigNo) {
+        this.empNo = empNo;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.sssNumber = sssNumber;
-        this.philHealthNumber = philHealthNumber;
+        this.sssNo = sssNo;
+        this.philHealthNo = philHealthNo;
         this.tin = tin;
-        this.pagIbigNumber = pagIbigNumber;
+        this.pagIbigNo = pagIbigNo;
     }
 
-    public String getEmpNumber() { return empNumber; }
-    public void setEmpNumber(String empNumber) { this.empNumber = empNumber; }
-
+    // Getters
+    public String getEmpNo() { return empNo; }
     public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
-
     public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-
-    public String getSssNumber() { return sssNumber; }
-    public void setSssNumber(String sssNumber) { this.sssNumber = sssNumber; }
-
-    public String getPhilHealthNumber() { return philHealthNumber; }
-    public void setPhilHealthNumber(String philHealthNumber) { this.philHealthNumber = philHealthNumber; }
-
+    public String getSssNo() { return sssNo; }
+    public String getPhilHealthNo() { return philHealthNo; }
     public String getTin() { return tin; }
+    public String getPagIbigNo() { return pagIbigNo; }
+
+    // Setters
+    public void setEmpNo(String empNo) { this.empNo = empNo; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setSssNo(String sssNo) { this.sssNo = sssNo; }
+    public void setPhilHealthNo(String philHealthNo) { this.philHealthNo = philHealthNo; }
     public void setTin(String tin) { this.tin = tin; }
-
-    public String getPagIbigNumber() { return pagIbigNumber; }
-    public void setPagIbigNumber(String pagIbigNumber) { this.pagIbigNumber = pagIbigNumber; }
-
-    public String toCSV() {
-        return String.join(",", empNumber, lastName, firstName, sssNumber, philHealthNumber, tin, pagIbigNumber);
-    }
+    public void setPagIbigNo(String pagIbigNo) { this.pagIbigNo = pagIbigNo; }
 }
