@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -6,53 +7,87 @@ import java.util.List;
 
 public class EmployeeAppGUI extends JFrame {
     private JTable table;
-    private DefaultTableModel tableModel;
-    private List<Employee> employeeList;
+    private DefaultTableModel model;
+    private JTextField[] fields = new JTextField[7];
 
     public EmployeeAppGUI() {
         setTitle("MotorPH Employee App");
-        setSize(900, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loadData();
+        setSize(800, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        JButton viewBtn = new JButton("View Employee");
-        JButton addBtn = new JButton("New Employee");
+        String[] columnNames = {"Emp#", "Last Name", "First Name", "SSS", "PhilHealth", "TIN", "Pag-IBIG"};
+        model = new DefaultTableModel(columnNames, 0);
+        table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
 
-        viewBtn.addActionListener(e -> viewEmployee());
-        addBtn.addActionListener(e -> addEmployee());
+        JPanel formPanel = new JPanel(new GridLayout(8, 2));
+        String[] labels = {"Emp#", "Last Name", "First Name", "SSS", "PhilHealth", "TIN", "Pag-IBIG"};
+        for (int i = 0; i < labels.length; i++) {
+            formPanel.add(new JLabel(labels[i]));
+            fields[i] = new JTextField();
+            formPanel.add(fields[i]);
+        }
 
-        JPanel bottom = new JPanel();
-        bottom.add(viewBtn);
-        bottom.add(addBtn);
+        JButton updateBtn = new JButton("Update");
+        JButton deleteBtn = new JButton("Delete");
+        updateBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+        formPanel.add(updateBtn);
+        formPanel.add(deleteBtn);
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
-        add(bottom, BorderLayout.SOUTH);
+        add(formPanel, BorderLayout.SOUTH);
+
+        table.getSelectionModel().addListSelectionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row >= 0) {
+                for (int i = 0; i < 7; i++) {
+                    fields[i].setText(model.getValueAt(row, i).toString());
+                }
+                updateBtn.setEnabled(true);
+                deleteBtn.setEnabled(true);
+            }
+        });
+
+        updateBtn.addActionListener(e -> {
+            Employee updated = new Employee(
+                fields[0].getText(), fields[1].getText(), fields[2].getText(),
+                fields[3].getText(), fields[4].getText(), fields[5].getText(), fields[6].getText()
+            );
+            EmployeeDataHandler.updateEmployee(updated);
+            refreshTable();
+        });
+
+        deleteBtn.addActionListener(e -> {
+            String empNumber = fields[0].getText();
+            EmployeeDataHandler.deleteEmployee(empNumber);
+            clearForm();
+            refreshTable();
+        });
+
+        refreshTable();
+        setVisible(true);
     }
 
-    private void loadData() {
-        employeeList = EmployeeDataHandler.loadEmployees();
-        String[] columns = {"Employee No", "Last Name", "First Name", "SSS", "PhilHealth", "TIN", "Pag-IBIG"};
-        tableModel = new DefaultTableModel(columns, 0);
-        for (Employee e : employeeList) tableModel.addRow(e.toTableRow());
-        table = new JTable(tableModel);
+    private void refreshTable() {
+        model.setRowCount(0);
+        List<Employee> employees = EmployeeDataHandler.loadEmployeesFromCSV();
+        for (Employee emp : employees) {
+            model.addRow(new Object[]{
+                emp.getEmpNumber(), emp.getLastName(), emp.getFirstName(),
+                emp.getSssNumber(), emp.getPhilHealthNumber(), emp.getTin(), emp.getPagIbigNumber()
+            });
+        }
     }
 
-    private void viewEmployee() {
-        int row = table.getSelectedRow();
-        if (row == -1) return;
-        Employee e = employeeList.get(row);
-        new EmployeeDetailsFrame(e).setVisible(true);
-    }
-
-    private void addEmployee() {
-        new NewEmployeeForm(() -> {
-            tableModel.setRowCount(0);
-            loadData();
-        }).setVisible(true);
+    private void clearForm() {
+        for (JTextField field : fields) {
+            field.setText("");
+        }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new EmployeeAppGUI().setVisible(true));
+        SwingUtilities.invokeLater(EmployeeAppGUI::new);
     }
 }
