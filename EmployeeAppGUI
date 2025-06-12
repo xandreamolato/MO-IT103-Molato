@@ -52,9 +52,8 @@ public class EmployeeAppGUI {
 
         loginFrame.add(userPanel);
         loginFrame.add(passPanel);
-        loginFrame.add(new JPanel()); // Spacer
+        loginFrame.add(new JPanel()); // spacer
         loginFrame.add(loginButton);
-
         loginFrame.setVisible(true);
     }
 
