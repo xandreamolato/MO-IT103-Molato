@@ -1,0 +1,27 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class AccountHandler {
+
+    private static final String ACCOUNTS_FILE = "accounts.csv";
+
+    public static boolean validateCredentials(String username, String password) {
+        try (BufferedReader br = new BufferedReader(new FileReader(ACCOUNTS_FILE))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] creds = line.split(",");
+                if (creds.length == 2) {
+                    String storedUsername = creds[0].trim();
+                    String storedPassword = creds[1].trim();
+                    if (storedUsername.equals(username) && storedPassword.equals(password)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading accounts file: " + e.getMessage());
+        }
+        return false;
+    }
+}
