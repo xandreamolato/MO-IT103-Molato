@@ -2,16 +2,16 @@ import java.io.*;
 import java.util.*;
 
 public class EmployeeDataHandler {
-    private static final String FILE_NAME = "employees.csv";
 
-    public static List<Employee> loadEmployeesFromCSV() {
+    public static List<Employee> readEmployeesFromCSV(String filename) {
         List<Employee> employees = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 7) {
-                    Employee emp = new Employee(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 7) {
+                    Employee emp = new Employee(parts[0], parts[1], parts[2],
+                                                parts[3], parts[4], parts[5], parts[6]);
                     employees.add(emp);
                 }
             }
@@ -21,31 +21,34 @@ public class EmployeeDataHandler {
         return employees;
     }
 
-    public static void updateEmployee(Employee updatedEmployee) {
-        List<Employee> employees = loadEmployeesFromCSV();
-        for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).getEmpNumber().equals(updatedEmployee.getEmpNumber())) {
-                employees.set(i, updatedEmployee);
-                break;
-            }
-        }
-        saveAllEmployees(employees);
-    }
-
-    public static void deleteEmployee(String empNumber) {
-        List<Employee> employees = loadEmployeesFromCSV();
-        employees.removeIf(emp -> emp.getEmpNumber().equals(empNumber));
-        saveAllEmployees(employees);
-    }
-
-    public static void saveAllEmployees(List<Employee> employees) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+    public static void writeEmployeesToCSV(List<Employee> employees, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             for (Employee emp : employees) {
-                bw.write(emp.toCSV());
-                bw.newLine();
+                String line = String.join(",", emp.getEmpNo(), emp.getLastName(), emp.getFirstName(),
+                                           emp.getSssNo(), emp.getPhilHealthNo(), emp.getTin(), emp.getPagIbigNo());
+                writer.write(line);
+                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Login validation using login.csv
+    public static boolean validateLogin(String username, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("login.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    if (parts[0].trim().equals(username) && parts[1].trim().equals(password)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
