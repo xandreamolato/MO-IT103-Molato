@@ -2,172 +2,139 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.List;
 
-public class EmployeeAppGUI extends JFrame {
-    private JTable employeeTable;
+public class EmployeeAppGUI {
+    private JFrame loginFrame, mainFrame;
+    private JTable table;
     private DefaultTableModel tableModel;
-
-    private JTextField empNumberField;
-    private JTextField lastNameField;
-    private JTextField firstNameField;
-    private JTextField sssField;
-    private JTextField philHealthField;
-    private JTextField tinField;
-    private JTextField pagIbigField;
+    private JTextField[] fields = new JTextField[7];
+    private final String[] labels = {"Employee No", "Last Name", "First Name", "SSS No", "PhilHealth No", "TIN", "Pag-IBIG No"};
+    private JButton viewButton, updateButton, deleteButton, addButton;
+    private List<Employee> employees;
+    private int selectedRow = -1;
 
     public EmployeeAppGUI() {
-        setTitle("MotorPH Employee App");
-        setSize(900, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-
-        // Top panel with form
-        JPanel inputPanel = new JPanel(new GridLayout(8, 2, 5, 5));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("Employee Details"));
-
-        empNumberField = new JTextField();
-        lastNameField = new JTextField();
-        firstNameField = new JTextField();
-        sssField = new JTextField();
-        philHealthField = new JTextField();
-        tinField = new JTextField();
-        pagIbigField = new JTextField();
-
-        inputPanel.add(new JLabel("Employee Number:"));
-        inputPanel.add(empNumberField);
-        inputPanel.add(new JLabel("Last Name:"));
-        inputPanel.add(lastNameField);
-        inputPanel.add(new JLabel("First Name:"));
-        inputPanel.add(firstNameField);
-        inputPanel.add(new JLabel("SSS Number:"));
-        inputPanel.add(sssField);
-        inputPanel.add(new JLabel("PhilHealth Number:"));
-        inputPanel.add(philHealthField);
-        inputPanel.add(new JLabel("TIN:"));
-        inputPanel.add(tinField);
-        inputPanel.add(new JLabel("Pag-IBIG Number:"));
-        inputPanel.add(pagIbigField);
-
-        // Buttons
-        JButton addButton = new JButton("Add");
-        JButton updateButton = new JButton("Update");
-        JButton deleteButton = new JButton("Delete");
-
-        inputPanel.add(addButton);
-        inputPanel.add(updateButton);
-        inputPanel.add(deleteButton);
-
-        add(inputPanel, BorderLayout.NORTH);
-
-        // Table
-        tableModel = new DefaultTableModel(new String[]{
-                "Employee No", "Last Name", "First Name", "SSS", "PhilHealth", "TIN", "Pag-IBIG"
-        }, 0);
-
-        employeeTable = new JTable(tableModel);
-        JScrollPane tableScrollPane = new JScrollPane(employeeTable);
-        add(tableScrollPane, BorderLayout.CENTER);
-
-        // Load existing data
-        loadEmployeesToTable();
-
-        // Add functionality
-        addButton.addActionListener(e -> {
-            Employee emp = new Employee(
-                    empNumberField.getText(),
-                    lastNameField.getText(),
-                    firstNameField.getText(),
-                    sssField.getText(),
-                    philHealthField.getText(),
-                    tinField.getText(),
-                    pagIbigField.getText()
-            );
-            EmployeeDataHandler.addEmployee(emp);
-            clearFields();
-            loadEmployeesToTable();
-        });
-
-        // Update functionality
-        updateButton.addActionListener(e -> {
-            int selectedRow = employeeTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                String empNumber = empNumberField.getText();
-                Employee updatedEmp = new Employee(
-                        empNumber,
-                        lastNameField.getText(),
-                        firstNameField.getText(),
-                        sssField.getText(),
-                        philHealthField.getText(),
-                        tinField.getText(),
-                        pagIbigField.getText()
-                );
-                EmployeeDataHandler.updateEmployee(empNumber, updatedEmp);
-                clearFields();
-                loadEmployeesToTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "Select an employee to update.");
-            }
-        });
-
-        // Delete functionality
-        deleteButton.addActionListener(e -> {
-            int selectedRow = employeeTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                String empNumber = tableModel.getValueAt(selectedRow, 0).toString();
-                int confirm = JOptionPane.showConfirmDialog(this, "Delete employee " + empNumber + "?");
-                if (confirm == JOptionPane.YES_OPTION) {
-                    EmployeeDataHandler.deleteEmployee(empNumber);
-                    clearFields();
-                    loadEmployeesToTable();
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Select an employee to delete.");
-            }
-        });
-
-        // Populate fields on row select
-        employeeTable.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                int selectedRow = employeeTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    empNumberField.setText(tableModel.getValueAt(selectedRow, 0).toString());
-                    lastNameField.setText(tableModel.getValueAt(selectedRow, 1).toString());
-                    firstNameField.setText(tableModel.getValueAt(selectedRow, 2).toString());
-                    sssField.setText(tableModel.getValueAt(selectedRow, 3).toString());
-                    philHealthField.setText(tableModel.getValueAt(selectedRow, 4).toString());
-                    tinField.setText(tableModel.getValueAt(selectedRow, 5).toString());
-                    pagIbigField.setText(tableModel.getValueAt(selectedRow, 6).toString());
-                }
-            }
-        });
-
-        setVisible(true);
+        showLoginScreen();
     }
 
-    private void loadEmployeesToTable() {
+    private void showLoginScreen() {
+        loginFrame = new JFrame("MotorPH Login");
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.setSize(300, 200);
+        loginFrame.setLayout(new GridLayout(4, 1));
+
+        JPanel userPanel = new JPanel(new FlowLayout());
+        JLabel userLabel = new JLabel("Username:");
+        JTextField userField = new JTextField(15);
+        userPanel.add(userLabel);
+        userPanel.add(userField);
+
+        JPanel passPanel = new JPanel(new FlowLayout());
+        JLabel passLabel = new JLabel("Password:");
+        JPasswordField passField = new JPasswordField(15);
+        passPanel.add(passLabel);
+        passPanel.add(passField);
+
+        JButton loginButton = new JButton("Login");
+        loginButton.addActionListener(e -> {
+            String username = userField.getText().trim();
+            String password = new String(passField.getPassword()).trim();
+
+            if (EmployeeDataHandler.validateLogin(username, password)) {
+                loginFrame.dispose();
+                showMainFrame();
+            } else {
+                JOptionPane.showMessageDialog(loginFrame, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        loginFrame.add(userPanel);
+        loginFrame.add(passPanel);
+        loginFrame.add(new JPanel()); // Spacer
+        loginFrame.add(loginButton);
+
+        loginFrame.setVisible(true);
+    }
+
+    private void showMainFrame() {
+        mainFrame = new JFrame("MotorPH Employee App");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setSize(1000, 500);
+
+        tableModel = new DefaultTableModel(labels, 0);
+        table = new JTable(tableModel);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane tableScroll = new JScrollPane(table);
+
+        JPanel formPanel = new JPanel(new GridLayout(8, 2));
+        for (int i = 0; i < labels.length; i++) {
+            formPanel.add(new JLabel(labels[i]));
+            fields[i] = new JTextField();
+            formPanel.add(fields[i]);
+        }
+
+        viewButton = new JButton("View All");
+        addButton = new JButton("Add");
+        updateButton = new JButton("Update");
+        deleteButton = new JButton("Delete");
+
+        viewButton.addActionListener(e -> refreshTable());
+        addButton.addActionListener(e -> addEmployee());
+        updateButton.addActionListener(e -> updateEmployee());
+        deleteButton.addActionListener(e -> deleteEmployee());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(viewButton);
+        buttonPanel.add(addButton);
+        buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
+
+        table.getSelectionModel().addListSelectionListener(e -> {
+            selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0 && selectedRow < employees.size()) {
+                Employee emp = employees.get(selectedRow);
+                fields[0].setText(emp.getEmpNo());
+                fields[1].setText(emp.getLastName());
+                fields[2].setText(emp.getFirstName());
+                fields[3].setText(emp.getSssNo());
+                fields[4].setText(emp.getPhilHealthNo());
+                fields[5].setText(emp.getTin());
+                fields[6].setText(emp.getPagIbigNo());
+            }
+        });
+
+        mainFrame.add(tableScroll, BorderLayout.CENTER);
+        mainFrame.add(formPanel, BorderLayout.EAST);
+        mainFrame.add(buttonPanel, BorderLayout.SOUTH);
+        refreshTable();
+        mainFrame.setVisible(true);
+    }
+
+    private void refreshTable() {
+        employees = EmployeeDataHandler.readEmployeesFromCSV("employees.csv");
         tableModel.setRowCount(0);
-        List<Employee> employees = EmployeeDataHandler.getAllEmployees();
         for (Employee emp : employees) {
             tableModel.addRow(new Object[]{
-                    emp.getEmployeeNumber(),
-                    emp.getLastName(),
-                    emp.getFirstName(),
-                    emp.getSssNumber(),
-                    emp.getPhilHealthNumber(),
-                    emp.getTinNumber(),
-                    emp.getPagIbigNumber()
+                emp.getEmpNo(), emp.getLastName(), emp.getFirstName(),
+                emp.getSssNo(), emp.getPhilHealthNo(), emp.getTin(), emp.getPagIbigNo()
             });
         }
     }
 
-    private void clearFields() {
-        empNumberField.setText("");
-        lastNameField.setText("");
-        firstNameField.setText("");
-        sssField.setText("");
-        philHealthField.setText("");
+    private void addEmployee() {
+        Employee emp = createEmployeeFromFields();
+        if (emp != null) {
+            employees.add(emp);
+            EmployeeDataHandler.writeEmployeesToCSV(employees, "employees.csv");
+            refreshTable();
+            clearFields();
+        }
+    }
+
+    private void updateEmployee() {
+        if (selectedRow >= 0)
         tinField.setText("");
         pagIbigField.setText("");
     }
