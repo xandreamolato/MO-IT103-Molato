@@ -1,43 +1,44 @@
 public class Employee {
-    private String empNo, lastName, firstName;
-    private String sss, philHealth, tin, pagIbig;
-    private double ratePerDay;
-    private int daysWorked;
+    private String empNumber;
+    private String lastName;
+    private String firstName;
+    private String sssNumber;
+    private String philHealthNumber;
+    private String tin;
+    private String pagIbigNumber;
 
-    public Employee(String empNo, String lastName, String firstName,
-                    String sss, String philHealth, String tin, String pagIbig,
-                    double ratePerDay, int daysWorked) {
-        this.empNo = empNo;
+    public Employee(String empNumber, String lastName, String firstName, String sssNumber, String philHealthNumber, String tin, String pagIbigNumber) {
+        this.empNumber = empNumber;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.sss = sss;
-        this.philHealth = philHealth;
+        this.sssNumber = sssNumber;
+        this.philHealthNumber = philHealthNumber;
         this.tin = tin;
-        this.pagIbig = pagIbig;
-        this.ratePerDay = ratePerDay;
-        this.daysWorked = daysWorked;
+        this.pagIbigNumber = pagIbigNumber;
     }
 
-    public double computeSalary() {
-        return ratePerDay * daysWorked;
-    }
+    public String getEmpNumber() { return empNumber; }
+    public void setEmpNumber(String empNumber) { this.empNumber = empNumber; }
 
-    // Getters
-    public String[] toTableRow() {
-        return new String[]{empNo, lastName, firstName, sss, philHealth, tin, pagIbig};
-    }
-
-    public String[] toCSVRow() {
-        return new String[]{empNo, lastName, firstName, sss, philHealth, tin, pagIbig, String.valueOf(ratePerDay), String.valueOf(daysWorked)};
-    }
-
-    public String getEmpNo() { return empNo; }
     public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
     public String getFirstName() { return firstName; }
-    public String getSSS() { return sss; }
-    public String getPhilHealth() { return philHealth; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getSssNumber() { return sssNumber; }
+    public void setSssNumber(String sssNumber) { this.sssNumber = sssNumber; }
+
+    public String getPhilHealthNumber() { return philHealthNumber; }
+    public void setPhilHealthNumber(String philHealthNumber) { this.philHealthNumber = philHealthNumber; }
+
     public String getTin() { return tin; }
-    public String getPagIbig() { return pagIbig; }
-    public double getRatePerDay() { return ratePerDay; }
-    public int getDaysWorked() { return daysWorked; }
+    public void setTin(String tin) { this.tin = tin; }
+
+    public String getPagIbigNumber() { return pagIbigNumber; }
+    public void setPagIbigNumber(String pagIbigNumber) { this.pagIbigNumber = pagIbigNumber; }
+
+    public String toCSV() {
+        return String.join(",", empNumber, lastName, firstName, sssNumber, philHealthNumber, tin, pagIbigNumber);
+    }
 }
